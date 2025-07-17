@@ -3,28 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>IngéFroid - Bureau d'étude en réfrigération</title>
-    <!-- Ton CSS original, Tailwind, etc. – garde-le -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
-    <!-- Ton header -->
     <header class="bg-white dark:bg-gray-800 p-4 shadow">
         <h1 class="text-2xl font-bold">IngéFroid - Bureau d'étude en réfrigération</h1>
         <button onclick="nouveauProjet()" class="bg-purple-600 text-white px-4 py-2 rounded">Nouveau Projet</button>
         <button onclick="sauvegarder()" class="bg-green-600 text-white px-4 py-2 rounded">Sauvegarder</button>
     </header>
 
-    <!-- Mes Projets -->
     <section id="mes-projets" class="p-6">
         <h2 class="text-2xl font-bold">Mes Projets</h2>
         <p>Bienvenue dans LAMA ECCP</p>
-        <p>Créez vos premières soumissions frigorifiques professionnelles en quelques clics. 
-            Commencez par créer un nouveau projet.</p>
+        <p>Créez vos premières soumissions frigorifiques professionnelles en quelques clics. Commencez par créer un nouveau projet.</p>
         <button class="bg-purple-600 text-white px-4 py-2 rounded">Créer mon premier projet</button>
     </section>
 
-    <!-- Navigation -->
     <ul class="tab-links flex space-x-4 p-4 border-b">
         <li data-tab="infos-generales">Informations générales</li>
         <li data-tab="raccordements-postes">Raccordements postes</li>
@@ -34,55 +29,73 @@
         <li data-tab="apercu-export">Aperçu & Export</li>
     </ul>
 
-    <!-- Onglets Content (ton original + dynamique) -->
     <div id="infos-generales" class="tab-content p-6 hidden">
-        <!-- Ton form infos -->
         <form id="form-infos">
             <label>Marque / Bureau d'études</label>
             <div class="flex space-x-4">
                 <label><input type="radio" name="marque" value="IngéFroid"> IngéFroid</label>
                 <label><input type="radio" name="marque" value="LAMA ECCP"> LAMA ECCP</label>
             </div>
-            <label>Nom du projet <input name="nom-projet"></label>
-            <label>Client <input name="client"></label>
+            <label>Nom du projet <input name="nom-projet" placeholder="Ex: Installation Université de Neuchâtel"></label>
+            <label>Client <input name="client" placeholder="Ex: Université de Neuchâtel"></label>
             <div class="bg-blue-100 p-4 rounded">
                 <label>🌡️ Réfrigérant positif <select name="refrig-positif">
                     <option>R513A (HFO/HFC - A1)</option>
-                    <!-- Ton options -->
+                    <option>R454C (HFO/HFC - A2L)</option>
+                    <option>R455A (HFO/HFC - A2L)</option>
+                    <option>R744 (CO₂ - A1)</option>
+                    <option>R448A (HFO/HFC - A1)</option>
+                    <option>R449A (HFO/HFC - A1)</option>
                 </select></label>
                 <label>Réfrigérant négatif <select name="refrig-negatif">
                     <option>R454C (HFO/HFC - A2L)</option>
-                    <!-- Ton options -->
+                    <option>R455A (HFO/HFC - A2L)</option>
+                    <option>R513A (HFO/HFC - A1)</option>
+                    <option>R744 (CO₂ - A1)</option>
+                    <option>R448A (HFO/HFC - A1)</option>
+                    <option>R449A (HFO/HFC - A1)</option>
                 </select></label>
                 <p class="text-orange-500">A1 = Non inflammable | A2L = Faiblement inflammable</p>
             </div>
-            <label>Description du projet <textarea name="description"></textarea></label>
+            <label>Description du projet <textarea name="description" placeholder="Ex: Installation frigorifique complète..."></textarea></label>
         </form>
     </div>
 
-    <!-- Raccordements (exemple, duplique pour autres) -->
+    <!-- Raccordements Postes -->
     <div id="raccordements-postes" class="tab-content p-6 hidden">
         <h2>Raccordements postes</h2>
-        <button onclick="ajouterItem('raccordements')">Ajouter un raccordement</button>
+        <button onclick="ajouterItem('raccordements')" class="bg-purple-600 text-white px-4 py-2 rounded">Ajouter un raccordement</button>
         <div id="raccordements-list" class="space-y-6"></div>
     </div>
 
-    <!-- Chambres Froides (ton snippet + dynamique) -->
+    <!-- Chambres Froides -->
     <div id="chambres-froides" class="tab-content p-6 hidden">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold">Chambres froides</h2>
-            <button onclick="ajouterItem('chambres')">Ajouter une chambre</button>
+            <button onclick="ajouterItem('chambres')" class="bg-purple-600 text-white px-4 py-2 rounded">Ajouter une chambre</button>
         </div>
         <div id="chambres-list" class="space-y-6"></div>
     </div>
 
-    <!-- ... Ajoute les autres onglets similaires ... -->
+    <!-- Évaporateurs -->
+    <div id="evaporateurs" class="tab-content p-6 hidden">
+        <h2>Évaporateurs</h2>
+        <button onclick="ajouterItem('evaporateurs')" class="bg-purple-600 text-white px-4 py-2 rounded">Ajouter un évaporateur</button>
+        <div id="evaporateurs-list" class="space-y-6"></div>
+    </div>
+
+    <!-- Production Frigorifique -->
+    <div id="production-frigorifique" class="tab-content p-6 hidden">
+        <h2>Production frigorifique</h2>
+        <button onclick="ajouterItem('production')" class="bg-purple-600 text-white px-4 py-2 rounded">Ajouter une production</button>
+        <div id="production-list" class="space-y-6"></div>
+    </div>
 
     <!-- Aperçu & Export -->
     <div id="apercu-export" class="tab-content p-6 hidden">
         <h2>Aperçu & Export</h2>
         <div id="apercu" class="space-y-4"></div>
-        <button onclick="genererPDF()">Exporter Soumission PDF</button>
+        <button onclick="genererPDF()" class="bg-purple-600 text-white px-4 py-2 rounded">Exporter Soumission PDF</button>
     </div>
 
     <script>
@@ -99,12 +112,13 @@
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
                 document.getElementById(tab.dataset.tab).classList.remove('hidden');
             }));
+            tabs[0].click();
         }
 
         function ajouterItem(type) {
             const list = document.getElementById(type + '-list');
             const item = document.createElement('div');
-            item.className = 'bg-white p-4 rounded shadow';
+            item.className = 'bg-white dark:bg-gray-800 p-4 rounded-lg shadow space-y-4';
             item.innerHTML = getItemTemplate(type);
             list.appendChild(item);
             saveData();
@@ -113,44 +127,57 @@
         function getItemTemplate(type) {
             if (type === 'chambres') {
                 return `
-                    <h3>Nouvelle Chambre Froide</h3>
-                    <input placeholder="Position" name="position">
-                    <input placeholder="Nom" name="nom">
-                    <select name="type"><option>Positive</option><option>Négative</option></select>
-                    <!-- Ajoute tes champs -->
-                    <table>
-                        <tr>
-                            <th>Critère</th>
-                            <th>Specs</th>
-                            <th>Réponse</th>
-                            <th>Statut</th>
-                        </tr>
-                        <tr>
-                            <td>Dimensions ext.</td>
-                            <td><input name="dim_ext_spec" value="3400x2400x2600"></td>
-                            <td><input name="dim_ext_resp" oninput="updateStatut(this)"></td>
-                            <td class="statut">Conforme (<20%)</td>
-                        </tr>
-                        <!-- Ajoute lignes pour autres critères -->
-                    </table>
-                    <button onclick="this.parentElement.remove(); saveData()">Supprimer</button>
+                    <h3 class="text-xl font-bold">Nouvelle Chambre Froide</h3>
+                    <label class="block">
+                        <span class="text-gray-700 dark:text-gray-300">Position</span>
+                        <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" name="position">
+                    </label>
+                    <label class="block">
+                        <span class="text-gray-700 dark:text-gray-300">Nom</span>
+                        <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" name="nom">
+                    </label>
+                    <label class="block">
+                        <span class="text-gray-700 dark:text-gray-300">Type</span>
+                        <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" name="type">
+                            <option>Positive</option>
+                            <option>Négative</option>
+                            <option>Boissons</option>
+                        </select>
+                    </label>
+                    <label class="block">
+                        <span class="text-gray-700 dark:text-gray-300">Dimensions extérieures (L x P x H mm)</span>
+                        <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" name="dim_ext">
+                    </label>
+                    <label class="block">
+                        <span class="text-gray-700 dark:text-gray-300">Dimensions intérieures (L x P x H mm)</span>
+                        <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" name="dim_int">
+                    </label>
+                    <label class="block">
+                        <span class="text-gray-700 dark:text-gray-300">Épaisseur isolation (mm)</span>
+                        <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" name="epaisseur">
+                            <option>100</option>
+                            <option>160</option>
+                            <option>120</option>
+                            <option>200</option>
+                        </select>
+                    </label>
+                    <label class="block">
+                        <span class="text-gray-700 dark:text-gray-300">Type de porte</span>
+                        <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" name="porte">
+                            <option>Battant</option>
+                            <option>Coulissante</option>
+                            <option>Sectionnelle</option>
+                        </select>
+                    </label>
+                    <label class="block">
+                        <span class="text-gray-700 dark:text-gray-300">Vide passage (L x H mm)</span>
+                        <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" name="passage">
+                    </label>
+                    <button class="bg-red-500 text-white px-4 py-2 rounded" onclick="this.parentElement.remove(); saveData()">Supprimer</button>
                 `;
-            } // Ajoute pour autres types similaires
-            return '';
-        }
+            } // Ajoute templates pour 'raccordements', 'evaporateurs', 'production' de la même façon, avec leurs champs et tables validation
 
-        function updateStatut(input) {
-            const row = input.closest('tr');
-            const spec = row.querySelector('[name$="_spec"]').value;
-            const resp = input.value;
-            const statut = row.querySelector('.statut');
-            let ecart = 0;
-            if (spec && resp) {
-                ecart = Math.abs((resp - spec) / spec * 100);
-            }
-            if (ecart < 20) statut.innerHTML = 'Conforme (<20%)';
-            else if (ecart < 30) statut.innerHTML = 'Attention (20-30%)';
-            else statut.innerHTML = 'Critique (>30%)';
+            return 'Type non supporté';
         }
 
         function saveData() {
@@ -158,14 +185,25 @@
         }
 
         function renderAll() {
-            // Remplit les forms avec data
-            // Ex. pour infos, chambres, etc.
+            ['raccordements', 'chambres', 'evaporateurs', 'production'].forEach(type => {
+                const list = document.getElementById(type + '-list');
+                list.innerHTML = '';
+                data[type].forEach(itemData => {
+                    const item = document.createElement('div');
+                    item.className = 'bg-white dark:bg-gray-800 p-4 rounded-lg shadow space-y-4';
+                    let html = '';
+                    Object.keys(itemData).forEach(key => html += `<label>${key}: <input value="${itemData[key]}" name="${key}"></label>`);
+                    html += '<button class="bg-red-500 text-white px-4 py-2 rounded" onclick="this.parentElement.remove(); saveData()">Supprimer</button>';
+                    item.innerHTML = html;
+                    list.appendChild(item);
+                });
+            });
+            renderApercu();
         }
 
-        function genererPDF() {
-            const doc = new jsPDF();
-            doc.text('Soumission', 20, 20);
-            doc.save('soumission.pdf');
+        function renderApercu() {
+            const apercu = document.getElementById('apercu');
+            apercu.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
         }
 
         function nouveauProjet() {
@@ -174,7 +212,50 @@
         }
 
         function sauvegarder() {
-            alert('Sauvegardé !');
+            alert('Projet sauvegardé localement !');
+        }
+
+        function genererPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFontSize(18);
+            doc.text('Soumission Frigorifique - IngéFroid pour LAMA ECCP', 20, 20);
+            doc.setFontSize(12);
+            doc.text('www.lama.eccp.ch', 20, 30);
+            doc.text('TVA CHE-268.220.811', 20, 35);
+            doc.text(`Projet: ${data.infos['nom-projet'] || 'N/A'}`, 20, 40);
+            doc.text(`Client: ${data.infos['client'] || 'N/A'}`, 20, 45);
+            doc.text('Date: 17 Juillet 2025', 20, 50);
+
+            let y = 60;
+
+            data.chambres.forEach((ch, i) => {
+                doc.text(`Position ${ch.position || i+1}: Chambre froide ${ch.type || 'positive'}`, 20, y);
+                y += 5;
+                doc.text('Fourniture et pose d\'une chambre froide positive, selon descriptif suivants:', 25, y);
+                y += 5;
+                doc.text(`Isolation: Polyuréthane PIR, épaisseur ${ch.epaisseur || '100'} mm, U = 0.212 W/m²K`, 25, y);
+                y += 5;
+                doc.text(`Dimensions ext: ${ch.dim_ext || 'N/A'}`, 25, y);
+                y += 5;
+                doc.text(`Porte: ${ch.porte || 'Battant'}, Vide passage: ${ch.passage || 'N/A'}`, 25, y);
+                y += 10;
+
+                doc.autoTable({
+                    startY: y,
+                    head: [['Critère', 'Vos spécifications', 'Réponse soumissionnaire']],
+                    body: [
+                        ['Dimensions ext.', ch.dim_ext || '-', '✓ Spec (Conforme <20%)'],
+                        ['Épaisseur isolation', ch.epaisseur || '-', 'Attention (20-30%)'],
+                        ['Type de porte', ch.porte || '-', 'Critique (>30%)'],
+                        ['Prix livré posé HT', '', ''],
+                    ],
+                });
+                y = doc.lastAutoTable.finalY + 10;
+            });
+
+            doc.save('Soumission_IngéFroid.pdf');
         }
    </script>
 </body>
