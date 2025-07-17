@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>IngéFroid - Bureau d'étude en réfrigération</title>
+    <!-- Ton CSS original, Tailwind, etc. – garde-le -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
+    <!-- Ton header -->
+    <header class="bg-white dark:bg-gray-800 p-4 shadow">
+        <h1 class="text-2xl font-bold">IngéFroid - Bureau d'étude en réfrigération</h1>
+        <button onclick="nouveauProjet()" class="bg-purple-600 text-white px-4 py-2 rounded">Nouveau Projet</button>
+        <button onclick="sauvegarder()" class="bg-green-600 text-white px-4 py-2 rounded">Sauvegarder</button>
+    </header>
+
+    <!-- Mes Projets -->
+    <section id="mes-projets" class="p-6">
+        <h2 class="text-2xl font-bold">Mes Projets</h2>
+        <p>Bienvenue dans LAMA ECCP</p>
+        <p>Créez vos premières soumissions frigorifiques professionnelles en quelques clics. 
+            Commencez par créer un nouveau projet.</p>
+        <button class="bg-purple-600 text-white px-4 py-2 rounded">Créer mon premier projet</button>
+    </section>
+
+    <!-- Navigation -->
+    <ul class="tab-links flex space-x-4 p-4 border-b">
+        <li data-tab="infos-generales">Informations générales</li>
+        <li data-tab="raccordements-postes">Raccordements postes</li>
+        <li data-tab="chambres-froides">Chambres froides</li>
+        <li data-tab="evaporateurs">Évaporateurs</li>
+        <li data-tab="production-frigorifique">Production frigorifique</li>
+        <li data-tab="apercu-export">Aperçu & Export</li>
+    </ul>
+
+    <!-- Onglets Content (ton original + dynamique) -->
+    <div id="infos-generales" class="tab-content p-6 hidden">
+        <!-- Ton form infos -->
+        <form id="form-infos">
+            <label>Marque / Bureau d'études</label>
+            <div class="flex space-x-4">
+                <label><input type="radio" name="marque" value="IngéFroid"> IngéFroid</label>
+                <label><input type="radio" name="marque" value="LAMA ECCP"> LAMA ECCP</label>
+            </div>
+            <label>Nom du projet <input name="nom-projet"></label>
+            <label>Client <input name="client"></label>
+            <div class="bg-blue-100 p-4 rounded">
+                <label>🌡️ Réfrigérant positif <select name="refrig-positif">
+                    <option>R513A (HFO/HFC - A1)</option>
+                    <!-- Ton options -->
+                </select></label>
+                <label>Réfrigérant négatif <select name="refrig-negatif">
+                    <option>R454C (HFO/HFC - A2L)</option>
+                    <!-- Ton options -->
+                </select></label>
+                <p class="text-orange-500">A1 = Non inflammable | A2L = Faiblement inflammable</p>
+            </div>
+            <label>Description du projet <textarea name="description"></textarea></label>
+        </form>
+    </div>
+
+    <!-- Raccordements (exemple, duplique pour autres) -->
+    <div id="raccordements-postes" class="tab-content p-6 hidden">
+        <h2>Raccordements postes</h2>
+        <button onclick="ajouterItem('raccordements')">Ajouter un raccordement</button>
+        <div id="raccordements-list" class="space-y-6"></div>
+    </div>
+
+    <!-- Chambres Froides (ton snippet + dynamique) -->
+    <div id="chambres-froides" class="tab-content p-6 hidden">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold">Chambres froides</h2>
+            <button onclick="ajouterItem('chambres')">Ajouter une chambre</button>
+        </div>
+        <div id="chambres-list" class="space-y-6"></div>
+    </div>
+
+    <!-- ... Ajoute les autres onglets similaires ... -->
+
+    <!-- Aperçu & Export -->
+    <div id="apercu-export" class="tab-content p-6 hidden">
+        <h2>Aperçu & Export</h2>
+        <div id="apercu" class="space-y-4"></div>
+        <button onclick="genererPDF()">Exporter Soumission PDF</button>
+    </div>
+
+    <script>
+        let data = JSON.parse(localStorage.getItem('projetData')) || { infos: {}, raccordements: [], chambres: [], evaporateurs: [], production: [] };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAll();
+            initTabs();
+        });
+
+        function initTabs() {
+            const tabs = document.querySelectorAll('.tab-links li');
+            tabs.forEach(tab => tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+                document.getElementById(tab.dataset.tab).classList.remove('hidden');
+            }));
+        }
+
+        function ajouterItem(type) {
+            const list = document.getElementById(type + '-list');
+            const item = document.createElement('div');
+            item.className = 'bg-white p-4 rounded shadow';
+            item.innerHTML = getItemTemplate(type);
+            list.appendChild(item);
+            saveData();
+        }
+
+        function getItemTemplate(type) {
+            if (type === 'chambres') {
+                return `
+                    <h3>Nouvelle Chambre Froide</h3>
+                    <input placeholder="Position" name="position">
+                    <input placeholder="Nom" name="nom">
+                    <select name="type"><option>Positive</option><option>Négative</option></select>
+                    <!-- Ajoute tes champs -->
+                    <table>
+                        <tr>
+                            <th>Critère</th>
+                            <th>Specs</th>
+                            <th>Réponse</th>
+                            <th>Statut</th>
+                        </tr>
+                        <tr>
+                            <td>Dimensions ext.</td>
+                            <td><input name="dim_ext_spec" value="3400x2400x2600"></td>
+                            <td><input name="dim_ext_resp" oninput="updateStatut(this)"></td>
+                            <td class="statut">Conforme (<20%)</td>
+                        </tr>
+                        <!-- Ajoute lignes pour autres critères -->
+                    </table>
+                    <button onclick="this.parentElement.remove(); saveData()">Supprimer</button>
+                `;
+            } // Ajoute pour autres types similaires
+            return '';
+        }
+
+        function updateStatut(input) {
+            const row = input.closest('tr');
+            const spec = row.querySelector('[name$="_spec"]').value;
+            const resp = input.value;
+            const statut = row.querySelector('.statut');
+            let ecart = 0;
+            if (spec && resp) {
+                ecart = Math.abs((resp - spec) / spec * 100);
+            }
+            if (ecart < 20) statut.innerHTML = 'Conforme (<20%)';
+            else if (ecart < 30) statut.innerHTML = 'Attention (20-30%)';
+            else statut.innerHTML = 'Critique (>30%)';
+        }
+
+        function saveData() {
+            localStorage.setItem('projetData', JSON.stringify(data));
+        }
+
+        function renderAll() {
+            // Remplit les forms avec data
+            // Ex. pour infos, chambres, etc.
+        }
+
+        function genererPDF() {
+            const doc = new jsPDF();
+            doc.text('Soumission', 20, 20);
+            doc.save('soumission.pdf');
+        }
+
+        function nouveauProjet() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        function sauvegarder() {
+            alert('Sauvegardé !');
+        }
+   </script>
+</body>
+</html>
